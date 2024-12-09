@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="/static/formstyle.css">  <!-- 引用CSS -->
+</head>
+<body>
+    <div class="form-container">
+        <h1>用户登录</h1>
+        <form method="POST" action="/login">
+            <input type="text" id="username" name="username" placeholder="用户名" required>
+            <input type="password" id="password" name="password" placeholder="密码" required>
+            <button type="submit">登录</button>
+        </form>
+        <a href="/register">没有账号？点击注册</a>
+        <a href="/forgot_password">忘记密码？点击找回</a>
+    </div>
+</body>
+</html>

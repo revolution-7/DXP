@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑页面</title>
+    <link rel="stylesheet" href="/static/welcome.css">  <!-- 引用CSS样式文件 -->
+    <style>
+        /* 调整各列宽度 */
+        th:nth-child(1), td:nth-child(1) { width: 5%; }  /* ID列 */
+        th:nth-child(2), td:nth-child(2) { width: 17%; }  /* 标题列 */
+        th:nth-child(3), td:nth-child(3) { width: 51%; }  /* 内容列（宽一点） */
+        th:nth-child(4), td:nth-child(4) { width: 27%; }  /* 创建日期列 */
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">网站首页</a></li>
+            <li><a href="/bio">人物简介</a></li>
+            <li><a href="/life_story">生平事迹</a></li>
+            <li><a href="/quotes">名言名句</a></li>
+            <li><a href="/theory">邓小平理论</a></li>
+            <li><a href="/decision_support">辅助决策（测试）</a></li>
+            <li><a href="/edit_data">编辑数据</a></li>
+        </ul>
+    </nav>
+
+    <!-- 页面内容 -->
+    <div class="content">
+        <div style="display: flex;">
+            <!-- 左侧编辑表单 -->
+            <div style="flex: 2; margin-right: 20px;">
+                <h1>编辑数据</h1>
+                <form action="/edit_data" method="POST">
+
+                    <div class="form-container">
+                        <!-- 左侧文本框 -->
+                        <div class="form-column">
+                            <h2>ID</h2>
+                            <input type="text" name="section_id" placeholder="请输入ID...">
+
+                            <h2>网站首页</h2>
+                            <textarea name="homepage_content" rows="4" placeholder="请输入网站首页内容..."></textarea>
+
+                            <h2>人物简介</h2>
+                            <textarea name="bio_content" rows="4" placeholder="请输入人物简介内容..."></textarea>
+                        </div>
+
+                        <!-- 右侧文本框 -->
+                        <div class="form-column">
+                            <h2>生平事迹</h2>
+                            <textarea name="life_story_content" rows="4" placeholder="请输入生平事迹内容..."></textarea>
+
+                            <h2>名言名句</h2>
+                            <textarea name="quotes_content" rows="4" placeholder="请输入名言名句内容..."></textarea>
+
+                            <h2>邓小平理论</h2>
+                            <textarea name="theory_content" rows="4" placeholder="请输入邓小平理论内容..."></textarea>
+                        </div>
+                    </div>
+
+                    <br><br>
+                    <button type="submit">提交/修改数据</button>
+                </form>
+            </div>
+
+            <!-- 右侧内容列表 -->
+            <div style="flex: 1;">
+                <h1>现有内容</h1>
+                <div class="scrollable-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>标题</th>
+                                <th>内容</th>
+                                <th>创建日期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for section in sections %}
+                                <tr>
+                                    <td>{{ section.id }}</td>
+                                    <td>{{ section.section_title }}</td>
+                                    <td>{{ section.section_content|safe }}</td>
+                                    <td>{{ section.created_at }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

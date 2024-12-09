@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    <link rel="stylesheet" href="/static/formstyle.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>用户注册</h1>
+        <form method="POST" action="/register">
+            <input type="text" id="username" name="username" placeholder="用户名" required>
+            <input type="password" id="password" name="password" placeholder="密码" required>
+            <input type="email" id="email" name="email" placeholder="邮箱" required>
+            <input type="tel" id="phone" name="phone" placeholder="手机号" required pattern="^\d{11}$" title="请输入11位数字的手机号">
+            <button type="submit">注册</button>
+        </form>
+        <a href="/login">已有账号？点击登录</a>
+    </div>
+</body>
+</html>

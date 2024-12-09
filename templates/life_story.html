@@ -1,0 +1,9 @@
+{% extends "welcome.html" %}
+
+{% import "render_section_block.html" as section_macros %}  <!-- 引入宏文件 -->
+
+{% block title %}生平事迹{% endblock %}
+
+{% block content %}
+    {{ section_macros.render_section_block('生平事迹', main_sections) }} <!-- 调用宏 -->
+{% endblock %}

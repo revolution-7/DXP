@@ -1,0 +1,23 @@
+{% macro render_section_block(section_title, sections) %}
+    <div class="container">
+        <h1>{{ section_title }}</h1>
+        {% for section in sections %}
+            <div class="section-item my-3"> <!-- 添加样式类并增加间距 -->
+                <a href="{{ url_for('section_detail', section_id=section.id) }}">
+                    {{ section.section_content[:35] }}...
+                </a>
+                {% if section.subsections %}
+                    <ul class="subsection-list mt-2"> <!-- 子章节部分添加样式类 -->
+                        {% for subsection in section.subsections %}
+                            <li>
+                                <a href="{{ url_for('section_detail', section_id=subsection.id) }}">
+                                    {{ subsection.section_content[:35] }}...
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}

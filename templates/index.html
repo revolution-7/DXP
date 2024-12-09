@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邓小平管理信息系统</title>
+    <style>
+        /* 背景图设置，确保宽度全覆盖，且高度不足时居中 */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("/static/images/国旗.gif"); /* 使用GIF作为背景 */
+            background-size: cover;  /* 确保背景宽度覆盖整个页面 */
+            background-position: center;  /* 背景居中 */
+            background-repeat: no-repeat;  /* 背景不重复 */
+            color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* 使其占满整个视口高度 */
+            margin: 0;
+            position: relative; /* 让绝对定位元素相对于此元素定位 */
+            overflow: hidden; /* 隐藏溢出内容 */
+        }
+
+        /* 内容区域样式 */
+        .content {
+            margin: 150px auto 0; /* 中心化内容区域 */
+            max-width: 90%; /* 限制最大宽度 */
+        }
+
+        /* 左下角图片样式 */
+        .top-left-image {
+            width: 100%;
+            max-width: 256px;
+            height: auto;
+            position: absolute;
+            bottom: 10px; /* 确保不超出视口 */
+            left: 10px; /* 确保不超出视口 */
+            max-height: 90%; /* 限制最大高度，确保不超出 */
+        }
+
+        /* 按钮样式 */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width: 200px;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 手机端适配 */
+        @media (max-width: 600px) {
+            .top-left-image {
+                max-width: 128px;
+                bottom: 5px;
+                left: 5px;
+            }
+
+            .content {
+                margin-top: 100px;
+            }
+
+            .button-container button {
+                width: 80%;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 显示图片，并将其定位到页面左下角 -->
+    <img src="{{ url_for('static', filename='images/邓小平1.jpg') }}" alt="示例图片" class="top-left-image" id="movingImage">
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>欢迎来到邓小平管理信息系统</h1>
+        <div class="button-container">
+            <button onclick="window.location.href='/login'">登录</button>
+            <button onclick="window.location.href='/register'">注册</button>
+            <button onclick="window.location.href='/forgot_password'">忘记密码</button>
+        </div>
+    </div>
+
+    <script>
+        const image = document.getElementById('movingImage');
+        let posX = 10; // 初始X位置
+        let posY = window.innerHeight - image.offsetHeight - 10; // 初始Y位置
+        let speedX = Math.random() * 1 + 1; // 水平速度，随机
+        let speedY = Math.random() * 1 + 1; // 垂直速度，随机
+
+        function moveImage() {
+            // 更新位置
+            posX += speedX;
+            posY -= speedY;
+
+            // 碰到上下边框时翻转垂直方向
+            if (posY <= 0 || posY + image.offsetHeight >= window.innerHeight) {
+                speedY = -speedY; // 翻转垂直方向
+            }
+
+            // 碰到左右边框时翻转水平方向
+            if (posX <= 0 || posX + image.offsetWidth >= window.innerWidth) {
+                speedX = -speedX; // 翻转水平方向
+            }
+
+            // 更新图片位置
+            image.style.left = posX + 'px';
+            image.style.top = posY + 'px';
+
+            requestAnimationFrame(moveImage); // 递归调用以创建动画
+        }
+
+        moveImage(); // 启动动画
+    </script>
+</body>
+</html>
