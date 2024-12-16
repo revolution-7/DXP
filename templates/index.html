@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎来到中国历史事件查询系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        .modal-dialog {
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">欢迎来到中国历史事件查询系统</h1>
+        <div class="d-flex justify-content-center mt-5">
+            <button class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#loginModal">登录</button>
+            <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#registerModal">注册</button>
+            <button class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">找回密码</button>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">登录</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">密码</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">登录</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">注册</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/register" method="POST">
+                        <div class="mb-3">
+                            <label for="reg_username" class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="reg_username" name="username" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reg_password" class="form-label">密码</label>
+                            <input type="password" class="form-control" id="reg_password" name="password" placeholder="请输入密码" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="请输入邮箱" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">电话</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="请输入电话" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">角色</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="游客" selected>游客</option>
+                                <option value="会员">会员</option>
+                                <option value="管理员">管理员</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">注册</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 找回密码模态框 -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetPasswordModalLabel">找回密码</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/reset-password" method="POST">
+                        <div class="mb-3">
+                            <label for="reset_username" class="form-label">用户名</label>
+                            <input type="text" class="form-control" id="reset_username" name="username" placeholder="请输入用户名" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reset_email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="reset_email" name="email" placeholder="请输入注册邮箱" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="reset_phone" class="form-label">电话</label>
+                            <input type="text" class="form-control" id="reset_phone" name="phone" placeholder="请输入注册电话" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">找回密码</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
