@@ -7,6 +7,7 @@ import pytz
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:20040707sqy@localhost:3306/dxp'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'sqy'
 
 # 初始化数据库
 db = SQLAlchemy(app)
