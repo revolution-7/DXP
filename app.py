@@ -52,12 +52,9 @@ class Person(db.Model):
 # 事件-人物关联表
 class EventPerson(db.Model):
     __tablename__ = 'event_person'
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id', ondelete='CASCADE'), primary_key=True)  # 事件ID
-    person_id = db.Column(db.Integer, db.ForeignKey('persons.id', ondelete='CASCADE'), primary_key=True)  # 人物ID
-
-    # 外键关联
-    event = db.relationship('Event', backref=db.backref('event_persons', passive_deletes=True))
-    person = db.relationship('Person', backref=db.backref('person_events', passive_deletes=True))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 新增主键 id
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id', ondelete='SET NULL'), nullable=True)  # 事件ID
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.id', ondelete='SET NULL'), nullable=True)  # 人物ID
 
 
 # 用户注册
@@ -245,7 +242,128 @@ def model():
 # 编辑数据路由
 @app.route('/edit_data')
 def edit_data():
+    # 检查用户是否登录并且是管理员
+    if 'user_id' not in session or session.get('role') != '管理员':
+        flash('您没有权限访问该页面！', 'danger')
+        return redirect(url_for('welcome'))  # 如果没有登录或不是管理员，重定向到首页或登录页面
+
     return render_template('edit_data.html')
+
+
+
+# 表格数据获取接口
+@app.route('/get_table_data/<table_name>', methods=['GET'])
+def get_table_data(table_name):
+    # 定义表名与模型的映射关系
+    table_mapping = {
+        'users': User,
+        'events': Event,
+        'persons': Person,
+        'events_person': EventPerson
+    }
+
+    model = table_mapping.get(table_name)
+    if model:
+        # 提取表的所有列名
+        columns = [column.name for column in model.__table__.columns]
+
+        # 获取所有行数据
+        rows = model.query.all()
+        data = [[getattr(row, column) for column in columns] for row in rows]
+
+        return jsonify({'columns': columns, 'rows': data})
+    return jsonify({'error': 'Invalid table name'}), 400
+
+
+# 更新数据接口
+@app.route('/update_table_data/<table_name>', methods=['POST'])
+def update_table_data(table_name):
+    # 定义表名与模型的映射关系
+    table_mapping = {
+        'users': User,
+        'events': Event,
+        'persons': Person,
+        'events_person': EventPerson
+    }
+
+    model = table_mapping.get(table_name)
+    if model:
+        try:
+            data = request.json.get('data')  # 获取前端传来的数据列表
+            columns = [column.name for column in model.__table__.columns]  # 获取列名
+
+            # 预处理数据函数：格式化日期，处理空值等
+            def preprocess_data(row, columns):
+                preprocessed_row = []
+                for i, column in enumerate(columns):
+                    value = row[i]
+                    if column == 'birth_date' or column == 'death_date':
+                        # 日期字段预处理，转换成 'YYYY-MM-DD' 格式
+                        if isinstance(value, str):
+                            try:
+                                # 尝试将日期字符串转换为标准格式
+                                value = datetime.strptime(value, '%a, %d %b %Y %H:%M:%S GMT').strftime('%Y-%m-%d')
+                            except ValueError:
+                                value = None  # 如果转换失败，设为 None
+                    elif column == 'created_at' or column == 'time':
+                        # 处理 'created_at' 和 'time' 字段，将其转换为标准的 'YYYY-MM-DD HH:MM:SS' 格式
+                        if isinstance(value, str):
+                            try:
+                                value = datetime.strptime(value, '%a, %d %b %Y %H:%M:%S GMT').strftime('%Y-%m-%d %H:%M:%S')
+                            except ValueError:
+                                value = None  # 如果转换失败，设为 None
+                    # 如果其他字段为 None 或空字符串，设为 None
+                    elif value == "" or value is None:
+                        value = None
+
+                    preprocessed_row.append(value)
+                return preprocessed_row
+
+            # 获取当前表中的所有记录
+            existing_data = db.session.query(model).all()
+            existing_ids = [record.id for record in existing_data]  # 获取所有现有记录的 ID
+
+            # 获取前端传来的数据中的所有 ID
+            updated_ids = [row[0] for row in data]
+
+            # 删除现有数据中不在前端数据中的记录
+            ids_to_delete = set(existing_ids) - set(updated_ids)
+            if ids_to_delete:
+                db.session.query(model).filter(model.id.in_(ids_to_delete)).delete(synchronize_session=False)
+
+            # 更新或插入数据
+            for row in data:
+                row_id = row[0]  # 假设第一个元素是ID
+                preprocessed_row = preprocess_data(row, columns)  # 对数据进行预处理
+                record = model.query.get(row_id)
+
+                if record:
+                    # 更新现有记录
+                    updated = False  # 标记是否有数据更新
+                    for i, column in enumerate(columns):
+                        if column != 'id' and preprocessed_row[i] != getattr(record, column):  # 不为主键且数据不同
+                            setattr(record, column, preprocessed_row[i])  # 更新字段值
+                            updated = True
+
+                    # 如果有更新操作，则提交更改
+                    if updated:
+                        db.session.commit()
+                else:
+                    # 如果记录不存在，说明是新增数据
+                    # 创建新记录时，使用关键字参数传递字段和值
+                    new_record = model(**dict(zip(columns, preprocessed_row)))
+                    db.session.add(new_record)
+
+            # 提交所有更改
+            db.session.commit()
+
+            return jsonify({'message': f'{table_name} 数据已成功更新！'})
+        except Exception as e:
+            db.session.rollback()  # 如果出错，回滚事务
+            return jsonify({'error': str(e)}), 500
+    return jsonify({'error': 'Invalid table name'}), 400
+
+
 
 @app.route('/')
 def index():
@@ -253,4 +371,8 @@ def index():
 
 
 if __name__ == '__main__':
+    # 检查表是否存在并创建（如果表不存在）
+    with app.app_context():
+        db.create_all()  # 会检查并创建所有模型对应的表
     app.run(debug=True)
+
