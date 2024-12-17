@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>事件查询</h1>
+
+    <!-- 搜索框 -->
+    <div class="mb-4">
+        <form method="POST" action="{{ url_for('search_events') }}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search_query" placeholder="请输入事件名称" required>
+                <button class="btn btn-primary" type="submit">搜索</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 事件列表 -->
+    <h3>事件列表</h3>
+    <ul class="list-group">
+        {% for event in events %}
+            <li class="list-group-item">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#eventModal" data-event-id="{{ event.id }}">
+                    {{ event.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- 事件详情 Modal -->
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventModalLabel">事件详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="event-details">加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 使用Bootstrap的modal来动态加载事件详情
+        var eventModal = document.getElementById('eventModal');
+        eventModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var eventId = button.getAttribute('data-event-id');
+
+            // 使用Ajax请求事件详情
+            fetch(`/event_details/${eventId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var eventDetails = document.getElementById('event-details');
+                    var imgUrl = '/static/image/' + data.image_link;  // 在这里拼接图片路径
+
+                    eventDetails.innerHTML = `
+                        <strong>事件名称:</strong> ${data.name}<br>
+                        <strong>时间:</strong> ${data.time}<br>
+                        <strong>事件过程:</strong> ${data.process}<br>
+                        <strong>事件影响:</strong> ${data.effect}<br>
+                        ${
+                            data.image_link ?
+                            `<img src="${imgUrl}" alt="事件图片" class="img-fluid"><br>`
+                            : ''
+                        }
+                        <strong>相关人物:</strong><br>
+                        ${data.persons.map(person => `
+                            <p>${person.name} - ${person.gender} - 生于 ${person.birth_date} - 死于 ${person.death_date || '未知'}</p>
+                        `).join('')}
+                    `;
+                })
+                .catch(error => {
+                    var eventDetails = document.getElementById('event-details');
+                    eventDetails.innerHTML = "无法加载事件详情，请稍后再试。";
+                });
+        });
+    </script>
+{% endblock %}

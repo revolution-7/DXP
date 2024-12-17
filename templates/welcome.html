@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center">欢迎回来，{{ session['username'] }}！</h1>
+    <p class="text-center">您的角色是: {{ session['role'] }}</p>
+
+    <h3>个人信息</h3>
+    <table class="table table-bordered">
+        <tr>
+            <th>用户名</th>
+            <td>{{ session['username'] }}</td>
+        </tr>
+        <tr>
+            <th>邮箱</th>
+            <td>{{ session['email'] }}</td>
+        </tr>
+        <tr>
+            <th>电话</th>
+            <td>{{ session['phone'] }}</td>
+        </tr>
+        <tr>
+            <th>注册时间</th>
+            <td>{{ session['created_at'] }}</td>
+        </tr>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger mx-2">退出登录</a>
+    </div>
+{% endblock %}

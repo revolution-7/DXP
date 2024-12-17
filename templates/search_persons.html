@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>人物查询</h1>
+
+    <!-- 搜索框 -->
+    <div class="mb-4">
+        <form method="POST" action="{{ url_for('search_persons') }}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search_query" placeholder="请输入人物姓名" required>
+                <button class="btn btn-primary" type="submit">搜索</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- 人物列表 -->
+    <h3>人物列表</h3>
+    <ul class="list-group">
+        {% for person in persons %}
+            <li class="list-group-item">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#personModal" data-person-id="{{ person.id }}">
+                    {{ person.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- 人物详情 Modal -->
+    <div class="modal fade" id="personModal" tabindex="-1" aria-labelledby="personModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="personModalLabel">人物详情</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="person-details">加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 使用Bootstrap的modal来动态加载人物详情
+        var personModal = document.getElementById('personModal');
+        personModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var personId = button.getAttribute('data-person-id');
+
+            // 使用Ajax请求人物详情
+            fetch(`/person_details/${personId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var personDetails = document.getElementById('person-details');
+
+                    personDetails.innerHTML = `
+                        <strong>姓名:</strong> ${data.name}<br>
+                        <strong>性别:</strong> ${data.gender}<br>
+                        <strong>出生日期:</strong> ${data.birth_date}<br>
+                        <strong>死亡日期:</strong> ${data.death_date || '未知'}<br>
+                        <strong>创建时间:</strong> ${data.created_at}<br>
+                    `;
+                })
+                .catch(error => {
+                    var personDetails = document.getElementById('person-details');
+                    personDetails.innerHTML = "无法加载人物详情，请稍后再试。";
+                });
+        });
+    </script>
+
+{% endblock %}
