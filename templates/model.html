@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+    <h1>大模型</h1>
+
+    <!-- 输入框 -->
+    <div class="mb-3">
+        <label for="inputText" class="form-label">请输入问题：</label>
+        <input type="text" id="inputText" class="form-control" placeholder="请输入您的问题">
+    </div>
+
+    <!-- 提交按钮 -->
+    <button id="submitBtn" class="btn btn-primary">提交</button>
+
+    <!-- 显示请耐心等候的提示 -->
+    <div id="loadingDiv" class="mt-4" style="display: none;">
+        <p>请耐心等候...</p>
+    </div>
+
+    <!-- 显示回答的元素 -->
+    <div id="responseDiv" class="mt-4" style="display: none;">
+        <h4>回答：</h4>
+        <p id="responseText"></p>
+    </div>
+
+    <script>
+        // 提交的处理函数
+        function handleSubmit() {
+            const inputText = document.getElementById("inputText").value;
+
+            if (!inputText.trim()) {
+                alert("请输入内容");
+                return;
+            }
+
+            // 显示"请耐心等候"的提示
+            document.getElementById("loadingDiv").style.display = 'block';
+            document.getElementById("responseDiv").style.display = 'none'; // 隐藏回答区域
+
+            // 发送请求到后端
+            fetch('/model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: inputText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏"请耐心等候"的提示
+                document.getElementById("loadingDiv").style.display = 'none';
+
+                // 显示返回的回答
+                document.getElementById("responseText").innerText = data.answer;
+                document.getElementById("responseDiv").style.display = 'block'; // 显示回答区域
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('发生错误，请稍后再试');
+
+                // 隐藏"请耐心等候"的提示
+                document.getElementById("loadingDiv").style.display = 'none';
+            });
+        }
+
+        // 绑定提交按钮点击事件
+        document.getElementById("submitBtn").addEventListener("click", handleSubmit);
+
+        // 绑定回车键事件
+        document.getElementById("inputText").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                handleSubmit(); // 按下回车时提交
+            }
+        });
+    </script>
+{% endblock %}

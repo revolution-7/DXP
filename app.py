@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pytz
 from sqlalchemy import extract
+import requests
 
 # 初始化 Flask 应用
 app = Flask(__name__)
@@ -234,11 +235,6 @@ def search_time():
     return render_template('search_time.html', years=unique_years, events=events)
 
 
-# 大模型路由
-@app.route('/model')
-def model():
-    return render_template('model.html')
-
 # 编辑数据路由
 @app.route('/edit_data')
 def edit_data():
@@ -363,7 +359,47 @@ def update_table_data(table_name):
             return jsonify({'error': str(e)}), 500
     return jsonify({'error': 'Invalid table name'}), 400
 
+# 基础初始化设置
+base_url = "http://127.0.0.1:11434"
+headers = {
+    "Content-Type": "application/json"
+}
 
+@app.route('/model', methods=['GET', 'POST'])
+def model():
+    if request.method == 'POST':
+        # 获取前端传来的问题
+        data = request.get_json()
+        question = data.get('question')  # 从前端的 JSON 数据中获取输入内容
+
+        if not question:
+            return jsonify({'answer': "请输入问题后再提交。"})  # 返回 JSON 错误信息
+
+        # 构造请求数据
+        prompt = question
+        request_data = {
+            "model": "qwen2.5:3b",  # 使用的模型名称
+            "messages": [{
+                "role": "system",
+                "content": prompt
+            }],
+            "stream": False,
+        }
+
+        # 向 Ollama 发送请求
+        try:
+            response = requests.post(f"{base_url}/api/chat", headers=headers, json=request_data)
+            result = response.json()
+            answer = result.get("message", {}).get("content", "无法生成回答。")
+        except Exception as e:
+            answer = f"请求失败：{str(e)}"
+
+        # 返回回答到前端（返回 JSON 格式，前端可以直接处理）
+        return jsonify({'answer': answer})
+
+    else:
+        # GET 请求，直接返回表单
+        return render_template('model.html')  # 渲染 HTML 页面
 
 @app.route('/')
 def index():
