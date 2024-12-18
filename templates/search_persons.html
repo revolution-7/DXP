@@ -52,6 +52,7 @@
                 .then(response => response.json())
                 .then(data => {
                     var personDetails = document.getElementById('person-details');
+                    var imgUrl = '/static/image/' + data.image_link;  // 在这里拼接图片路径
 
                     personDetails.innerHTML = `
                         <strong>姓名:</strong> ${data.name}<br>
@@ -59,6 +60,11 @@
                         <strong>出生日期:</strong> ${data.birth_date}<br>
                         <strong>死亡日期:</strong> ${data.death_date || '未知'}<br>
                         <strong>创建时间:</strong> ${data.created_at}<br>
+                        ${
+                            data.image_link ?
+                            `<img src="${imgUrl}" alt="事件图片" class="img-fluid"><br>`
+                            : ''
+                        }
                     `;
                 })
                 .catch(error => {

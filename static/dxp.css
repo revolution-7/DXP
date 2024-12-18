@@ -1,10 +1,24 @@
 .modal-dialog {
     max-width: 500px;
 }
+
 body {
-    background-image: url('static/image/背景.png');
+    background-image: url('/static/image/背景.png');
     background-size: cover; /* 确保背景图片覆盖整个页面 */
     background-repeat: no-repeat; /* 防止图片重复 */
     background-attachment: fixed; /* 背景固定，不随页面滚动 */
     background-position: center; /* 图片居中 */
+    color: #5F9F9F; /* 修改页面文字颜色为深灰色 */
+}
+h1, h2, h3, h4, h5, h6 {
+    color: #5F9F9F; /* 修改所有标题颜色为深灰色 */
+}
+p{
+    color: #5F9F9F; /* 修改段落、span 和 div 中的文字颜色为深灰色 */
+}
+span{
+    color: #5F9F9F; /* 修改段落、span 和 div 中的文字颜色为深灰色 */
+}
+div {
+    color: #5F9F9F; /* 修改段落、span 和 div 中的文字颜色为深灰色 */
 }

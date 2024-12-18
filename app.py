@@ -47,6 +47,7 @@ class Person(db.Model):
     gender = db.Column(db.String(10), nullable=False)  # 性别
     birth_date = db.Column(db.Date, nullable=False)  # 出生日期
     death_date = db.Column(db.Date, nullable=True)  # 死亡日期，可为空
+    image_link = db.Column(db.String(300), nullable=True)  # 图片链接
     created_at = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Asia/Shanghai')))
 
 
@@ -210,9 +211,11 @@ def person_details(person_id):
         'gender': person.gender,
         'birth_date': person.birth_date.strftime('%Y-%m-%d'),
         'death_date': person.death_date.strftime('%Y-%m-%d') if person.death_date else None,
-        'created_at': person.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        'created_at': person.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        'image_link': person.image_link
     }
     return jsonify(person_data)
+
 
 # 时间查询路由
 @app.route('/search_time', methods=['GET', 'POST'])
@@ -378,7 +381,7 @@ def model():
         # 构造请求数据
         prompt = question
         request_data = {
-            "model": "qwen2.5:3b",  # 使用的模型名称
+            "model": "qwen2.5:1.5b",  # 使用的模型名称
             "messages": [{
                 "role": "system",
                 "content": prompt
