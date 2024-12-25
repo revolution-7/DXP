@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}欢迎页面{% endblock %}</title>
+    <link rel="stylesheet" href="/static/welcome.css">  <!-- 引用单独的 welcome.css 文件 -->
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">网站首页</a></li>
+            <li><a href="/bio">人物简介</a></li>
+            <li><a href="/life_story">生平事迹</a></li>
+            <li><a href="/quotes">名言名句</a></li>
+            <li><a href="/theory">邓小平理论</a></li> <!-- 新增链接 -->
+            <li><a href="/decision_support">辅助决策（测试）</a></li> <!-- 新增链接 -->
+            <li><a href="/edit_data">编辑数据</a></li> <!-- 新增编辑数据链接 -->
+        </ul>
+    </nav>
+
+    <!-- 页面内容 -->
+    <div class="content">
+        {% block content %}
+        <h1>欢迎, {{ username }}!</h1>
+        <button onclick="window.location.href='/logout'">注销</button>
+        {% import "render_section_block.html" as section_macros %}  <!-- 引入宏文件 -->
+        {{ section_macros.render_section_block('网站首页', main_sections) }} <!-- 调用宏 -->
+        {% endblock %}
+    </div>
+</body>
+</html>

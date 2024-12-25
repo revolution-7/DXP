@@ -1,0 +1,29 @@
+{% extends 'welcome.html' %}
+
+{% block title %}大模型{% endblock %}
+
+{% block content %}
+<title>邓小平大模型</title>
+<h1>邓小平大模型</h1>
+<form id="question-form" method="POST" action="/decision_support" onsubmit="showWaitingMessage()">
+    <label for="question">请输入您的问题：</label>
+    <br>
+    <textarea id="question" name="question" rows="4" cols="50" placeholder="输入问题"></textarea>
+    <br><br>
+    <button type="submit">生成回答</button>
+</form>
+<h2>回答：</h2>
+<div id="answer">
+    {% if answer %}
+    <p>{{ answer }}</p>
+    {% endif %}
+</div>
+<div id="waiting-message" style="display: none; color: #808080;">请稍等...</div>
+
+<script>
+    function showWaitingMessage() {
+        // 显示等待提示
+        document.getElementById('waiting-message').style.display = 'block';
+    }
+</script>
+{% endblock %}

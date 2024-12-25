@@ -1,0 +1,72 @@
+/* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("/static/images/国旗.gif"); /* 使用GIF作为背景 */
+    background-size: cover;  /* 确保背景宽度覆盖整个页面 */
+    background-position: center;  /* 背景居中 */
+    background-repeat: no-repeat;  /* 背景不重复 */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 使其占满整个视口高度 */
+    margin: 0;
+}
+
+
+/* 表单容器 */
+.form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* 表单元素 */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"] { /* 添加手机号输入框的样式 */
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 链接 */
+a {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 标题样式 */
+h1 {
+    margin-bottom: 20px;
+}
